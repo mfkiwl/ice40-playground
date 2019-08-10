@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "console.h"
+#include "icepick.h"
 #include "led.h"
 #include "mini-printf.h"
 #include "spi.h"
@@ -35,6 +36,8 @@
 
 
 extern const struct usb_stack_descriptors app_stack_desc;
+
+
 
 static void
 serial_no_init()
@@ -80,13 +83,13 @@ void main()
 
 	/* Init console IO */
 	console_init();
-	puts("Booting App image..\n");
+	puts("Booting App image testing ..\n");
 
 	/* LED */
 	led_init();
-	led_color(48, 96, 5);
-	led_blink(true, 200, 1000);
-	led_breathe(true, 100, 200);
+	led_color(56, 5, 72);
+	led_blink(true, 250, 1250);
+	led_breathe(true, 1000, 750);
 	led_state(true);
 
 	/* SPI */
@@ -96,6 +99,12 @@ void main()
 	serial_no_init();
 	usb_init(&app_stack_desc);
 	usb_dfu_rt_init();
+	usb_cdc_acm_init();
+	icepick_init();
+	usb_connect();
+
+	/* IO */
+	icepick_set_vio(0xc00);
 
 	/* Main loop */
 	while (1)
@@ -110,9 +119,9 @@ void main()
 		if (cmd >= 0) {
 			if (cmd > 32 && cmd < 127) {
 				putchar(cmd);
-				putchar('\r');
-				putchar('\n');
 			}
+			putchar('\r');
+			putchar('\n');
 
 			switch (cmd)
 			{
@@ -123,10 +132,13 @@ void main()
 				boot_dfu();
 				break;
 			case 'c':
-				usb_connect();
+				icepick_test_clk();
 				break;
-			case 'd':
-				usb_disconnect();
+			case 'i':
+				icepick_test_io();
+				break;
+			case 's':
+				icepick_test_sense();
 				break;
 			default:
 				break;

@@ -9,6 +9,9 @@ PROJ_RTL_SRCS := $(addprefix rtl/, \
 	soc_bram.v \
 	soc_spram.v \
 	sysmgr.v \
+	clk_meas.v \
+	sense.v \
+	wb_calib.v \
 )
 PROJ_SIM_SRCS := $(addprefix sim/, \
 	spiflash.v \
@@ -19,7 +22,7 @@ PROJ_TESTBENCHES := \
 	top_tb
 PROJ_PREREQ = \
 	$(BUILD_TMP)/boot.hex
-PROJ_TOP_SRC := rtl/top.v
+PROJ_TOP_SRC := rtl/top_icepick.v
 PROJ_TOP_MOD := top
 
 # Target config

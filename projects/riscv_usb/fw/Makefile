@@ -49,6 +49,7 @@ HEADERS_app=\
 	usb_str_app.gen.h
 
 SOURCES_app=\
+	icepick.c \
 	fw_app.c \
 	usb_cdc_acm.c \
 	usb_dfu_rt.c \
