@@ -33,10 +33,9 @@ struct spi_xfer_chunk {
 };
 
 #define SPI_CS_FLASH	0
-#define SPI_CS_SRAM	1
 
-void spi_init(void);
-void spi_xfer(unsigned cs, struct spi_xfer_chunk *xfer, unsigned n);
+void spi_init(const unsigned chan);
+void spi_xfer(const unsigned chan, const unsigned cs, struct spi_xfer_chunk *xfer, unsigned n);
 
 void flash_cmd(uint8_t cmd);
 void flash_deep_power_down(void);
