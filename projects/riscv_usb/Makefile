@@ -1,13 +1,16 @@
 # Project config
 PROJ = riscv_usb
 
-PROJ_DEPS := usb misc
+PROJ_DEPS := no2usb no2misc no2ice40
 PROJ_RTL_SRCS := $(addprefix rtl/, \
-	bridge.v \
 	dfu_helper.v \
 	picorv32.v \
+	picorv32_ice40_regs.v \
 	soc_bram.v \
+	soc_picorv32_base.v \
+	soc_picorv32_bridge.v \
 	soc_spram.v \
+	soc_usb.v \
 	sysmgr.v \
 )
 PROJ_SIM_SRCS := $(addprefix sim/, \
@@ -33,10 +36,6 @@ NEXTPNR_ARGS = --pre-pack data/clocks.py --seed 2
 include ../../build/project-rules.mk
 
 # Custom rules
-ifeq ($(BOOT_CODE),dfu)
-YOSYS_READ_ARGS += -DDFU=1
-endif
-
 fw/boot.hex:
 	make -C fw boot.hex
 

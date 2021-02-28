@@ -79,7 +79,6 @@ module qspi_phy_ice40_2x #(
 		.IO_STANDARD("SB_LVCMOS")
 	) iob_io_I[3:0] (
 		.PACKAGE_PIN(pad_io),
-		.CLOCK_ENABLE(1'b1),
 		.INPUT_CLK(clk_1x),
 		.OUTPUT_CLK(clk_1x),
 		.OUTPUT_ENABLE(phy_io_oe),
@@ -123,15 +122,13 @@ module qspi_phy_ice40_2x #(
 			assign clk_out = (clk_toggle == clk_toggle_r) ? clk_active[0] : clk_active[1];
 
 			SB_IO #(
-				.PIN_TYPE(6'b110011),
+				.PIN_TYPE(6'b0100_11),
 				.PULLUP(1'b1),
 				.NEG_TRIGGER(1'b0),
 				.IO_STANDARD("SB_LVCMOS")
 			) iob_clk_I (
 				.PACKAGE_PIN(pad_clk),
-				.CLOCK_ENABLE(1'b1),
 				.OUTPUT_CLK(clk_2x),
-				.OUTPUT_ENABLE(1'b1),
 				.D_OUT_0(clk_out),
 				.D_OUT_1(1'b0)
 			);
@@ -141,20 +138,18 @@ module qspi_phy_ice40_2x #(
 	// Chip select
 	generate
 		// FIXME register CS config ?
-		// Because the default CS (for the config flash) shares an IO site
-		// with CLK, we can't use clk_1x here. So instead we don't register
-		// the signal at all and count of the fact it's held low a bit longer
-		// than needed by the controller ...
+		// Because of potential conflict with IO site, we don't register
+		// the CS signal at all and rely on the fact it's held low a bit longer
+		// than needed by the controller.
 		if (N_CS)
 			SB_IO #(
-				.PIN_TYPE(6'b101011),
+				.PIN_TYPE(6'b0110_11),
 				.PULLUP(1'b1),
 				.NEG_TRIGGER(1'b0),
 				.IO_STANDARD("SB_LVCMOS")
 			) iob_cs_I[N_CS-1:0] (
 				.PACKAGE_PIN(pad_cs_n),
-				.OUTPUT_ENABLE(~phy_cs_o),
-				.D_OUT_0(1'b0)
+				.D_OUT_0(phy_cs_o)
 			);
 	endgenerate
 
